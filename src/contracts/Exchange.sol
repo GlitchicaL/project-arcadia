@@ -2,18 +2,6 @@
 // Manage Orders - Make or cancel
 // Handle trades - Charge fees
 
-// TODO:
-// [X] Set the fee
-// [X] Deposit Ether
-// [X] Withdraw Ether
-// [X] Deposit tokens
-// [X] Withdraw tokens
-// [X] Check balances
-// [X] Make order
-// [X] Cancel order
-// [] Fill order
-// [] Charge fees
-
 pragma solidity ^0.5.16;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
@@ -30,6 +18,7 @@ contract Exchange {
     mapping(uint256 => _Order) public orders;
     uint256 public orderCount;
     mapping(uint256 => bool) public orderCancelled;
+    mapping(uint256 => bool) public orderFilled;
 
     // Events
     event Deposit(address token, address user, uint256 amount, uint256 balance);
@@ -55,6 +44,16 @@ contract Exchange {
         uint256 amountGet,
         address tokenGive,
         uint256 amountGive,
+        uint256 timestamp
+    );
+    event Trade(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        address userFill,
         uint256 timestamp
     );
 
@@ -189,6 +188,75 @@ contract Exchange {
             _order.amountGet,
             _order.tokenGive,
             _order.amountGive,
+            now
+        );
+    }
+
+    // ------------------------
+    // EXECUTING ORDERS
+
+    function fillOrder(uint256 _id) public {
+        // Ensure order is valid & isn't filled or canceled
+        require(_id > 0 && _id <= orderCount);
+        require(!orderFilled[_id]);
+        require(!orderCancelled[_id]);
+
+        // Fetch the order
+        _Order storage _order = orders[_id];
+
+        // Execute the trade
+        _trade(
+            _order.id,
+            _order.user,
+            _order.tokenGet,
+            _order.amountGet,
+            _order.tokenGive,
+            _order.amountGive
+        );
+
+        // Mark order as filled
+        orderFilled[_order.id] = true;
+    }
+
+    function _trade(
+        uint256 _orderId,
+        address _user,
+        address _tokenGet,
+        uint256 _amountGet,
+        address _tokenGive,
+        uint256 _amountGive
+    ) internal {
+        // Fee is paid by the user who filled the order (msg.sender)
+        // Fee is deducted from _amountGet
+        uint256 _feeAmount = _amountGet.mul(feePercent).div(100);
+
+        // Execute the trade
+        // msg.sender is the user who filled the order, while _user is who created the order
+        tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(
+            _amountGet.add(_feeAmount)
+        );
+
+        tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+
+        // Charge fees
+        tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(
+            _feeAmount
+        );
+
+        tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_amountGive);
+        tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender].add(
+            _amountGive
+        );
+
+        // Emit trade event
+        emit Trade(
+            _orderId,
+            _user,
+            _tokenGet,
+            _amountGet,
+            _tokenGive,
+            _amountGive,
+            msg.sender,
             now
         );
     }
