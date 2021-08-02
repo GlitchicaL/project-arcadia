@@ -1,4 +1,4 @@
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 // Import Components
 import Header from './components/Header';
@@ -10,11 +10,7 @@ import ExchangeScreen from './screens/ExchangeScreen';
 function App() {
 	return (
 		<Container fluid>
-			<Row>
-				<Col>
-					<Header />
-				</Col>
-			</Row>
+			<Header />
 
 			<ExchangeScreen />
 

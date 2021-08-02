@@ -1,32 +1,29 @@
 import { Component } from 'react';
 import { Tabs, Tab, Row, Col, Card } from 'react-bootstrap';
+import { connect } from 'react-redux';
 
-import Web3 from 'web3';
-import Token from '../abis/Token.json';
+// Import Actions
+import { loadWeb3, loadAccount } from '../redux/actions/web3Actions';
+import { loadToken } from '../redux/actions/tokenActions';
+import { loadExchange } from '../redux/actions/exchangeActions';
 
 class ExchangeScreen extends Component {
     componentWillMount() {
-        this.loadBlockchainData()
+        this.loadBlockchainData(this.props.dispatch)
     }
 
-    async loadBlockchainData() {
-        const web3 = new Web3(Web3.givenProvider || 'http://localhost:7545')
+    async loadBlockchainData(dispatch) {
+        const web3 = loadWeb3(dispatch)
 
         await window.ethereum.enable();
 
-        const network = await web3.eth.net.getNetworkType()
         const networkId = await web3.eth.net.getId()
 
-        const accounts = await web3.eth.getAccounts()
+        const accounts = await loadAccount(web3, dispatch)
 
-        console.log('abi', Token.abi)
-        console.log('address', Token.networks[networkId].address)
+        const token = loadToken(web3, networkId, dispatch)
 
-        const token = new web3.eth.Contract(Token.abi, Token.networks[networkId].address)
-        const totalSupply = await token.methods.totalSupply().call()
-
-        console.log(token)
-        console.log(totalSupply)
+        loadExchange(web3, networkId, dispatch)
     }
 
     render() {
@@ -120,4 +117,12 @@ class ExchangeScreen extends Component {
     }
 }
 
-export default ExchangeScreen;
+function mapStateToProps(state) {
+    return {
+
+    }
+}
+
+export default connect(mapStateToProps)(ExchangeScreen)
+
+//export default ExchangeScreen;
