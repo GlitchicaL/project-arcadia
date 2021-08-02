@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Raleway:wght@100;300;400;500;700;900&display=swap');
+
+:root {
+    --clr-black: #000000;
+    --clr-white: #E5F0FF;
+    --clr-torea-bay: #113380;
+    --clr-blue-charcoal: #01050F;
+    --clr-tarawera: #073546;
+    --clr-green: #00B38B;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background: radial-gradient(var(--clr-blue-charcoal) 10%, var(--clr-black) 75%) no-repeat;
+    min-height: 100%;
+}
+
+body {
+    background-color: transparent !important;
+    color: var(--clr-white);
+
+    font-family: "Raleway" !important;
+}
+
+/*** Text Styles (h1, h2, p, etc). ***/
+
+h1 {
+    font-weight: 700;
+    font-size: clamp(1.75rem, 5vw, 3rem);
+}
+
+h2 {
+    font-weight: 900;
+    font-size: clamp(1.60rem, 4vw, 2.75rem);
+}
+
+h3 {
+    font-weight: 500;
+    font-size: clamp(1.50rem, 4vw, 2.0rem);
+}
+
+h5 {
+    font-size: clamp(1.10rem, 4vw, 1.20rem);
+}
+
+p {
+    font-weight: 300;
+    font-size: clamp(1.10rem, 4vw, 1.20rem);
+    max-width: 60ch;
+}
+
+a {
+    color: var(--clr-white) !important;
+}
+
+/*** Universal Styles ***/
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/*** Override Bootstrap Styles ***/
+.card {
+    background: none !important;
+    color: var(--clr-white);
+
+    border-bottom: 1px solid var(--clr-white) !important;
+}
+
+.nav-link[role='tab'] {
+    margin-right: 0;
+    font-weight: 500 !important;
+
+    border: 1px solid var(--clr-white) !important;
+}
+
+.nav-link[aria-selected='true'] {
+    background: var(--clr-white) !important;
+    color: var(--clr-blue-charcoal) !important;
+}
+
+.dropdown-menu {
+    background: var(--clr-tarawera) !important;
+    color: var(--clr-white) !important;
+
+    border: 1px solid var(--clr-white);
+}
+
+.dropdown-item:hover {
+    background: var(--clr-white) !important;
+    color: var(--clr-blue-charcoal) !important;
+}
