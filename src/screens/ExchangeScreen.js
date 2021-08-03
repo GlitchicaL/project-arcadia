@@ -1,128 +1,141 @@
-import { Component } from 'react';
-import { Tabs, Tab, Row, Col, Card } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { Tabs, Tab, Row, Col, Card, Alert } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Import Actions
 import { loadWeb3, loadAccount } from '../redux/actions/web3Actions';
 import { loadToken } from '../redux/actions/tokenActions';
 import { loadExchange } from '../redux/actions/exchangeActions';
 
-class ExchangeScreen extends Component {
-    componentWillMount() {
-        this.loadBlockchainData(this.props.dispatch)
-    }
+const ExchangeScreen = () => {
+    const dispatch = useDispatch()
 
-    async loadBlockchainData(dispatch) {
-        const web3 = loadWeb3(dispatch)
+    const token = useSelector(state => state.token)
+    const { loaded: tokenLoaded } = token
 
-        await window.ethereum.enable();
+    const exchange = useSelector(state => state.exchange)
+    const { loaded: exchangeLoaded } = exchange
 
-        const networkId = await web3.eth.net.getId()
+    useEffect(() => {
+        const loadBlockchainData = async () => {
+            const web3 = dispatch(loadWeb3())
 
-        const accounts = await loadAccount(web3, dispatch)
+            await window.ethereum.enable();
 
-        const token = loadToken(web3, networkId, dispatch)
+            const networkId = await web3.eth.net.getId()
 
-        loadExchange(web3, networkId, dispatch)
-    }
+            const accounts = dispatch(loadAccount(web3))
+            const token = dispatch(loadToken(web3, networkId))
 
-    render() {
-        return (
-            <Row>
-                <Col>
+            if (!token) {
+                window.alert('Token not deployed to the current network. Please select another network with Metamask')
+                return
+            }
 
-                    {/* PRICE CHART */}
-                    <Card className='my-3'>
-                        <Card.Header>
-                            Price Chart
-                        </Card.Header>
-                        <Card.Body>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of the card's content.
-                            </Card.Text>
-                            <a href="/#" className="card-link">Card link</a>
-                        </Card.Body>
-                    </Card>
+            const exchange = dispatch(loadExchange(web3, networkId))
 
-                    {/* USER TRANSACTION HISTORY */}
-                    <Card className='my-3'>
-                        <Card.Header>
-                            My Transactions
-                        </Card.Header>
-                        <Card.Body>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of the card's content.
-                            </Card.Text>
-                            <a href="/#" className="card-link">Card link</a>
-                        </Card.Body>
-                    </Card>
-                </Col>
+            if (!exchange) {
+                window.alert('Exchange not deployed to the current network. Please select another network with Metamask')
+                return
+            }
+        }
 
-                {/* ORDER BOOK AND EXCHANGE TRADE HISTORY */}
-                <Col lg={3}>
-                    <Tabs defaultActiveKey="order-book" id="uncontrolled-tab-example">
-                        <Tab eventKey="order-book" title="Order Book">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Text>
-                                        Some quick example text to build on the card title and make up the bulk of the card's content.
-                                    </Card.Text>
-                                    <a href="/#" className="card-link">Card link</a>
-                                </Card.Body>
-                            </Card>
-                        </Tab>
-                        <Tab eventKey="trades" title="Trades">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Text>
-                                        Some quick example text to build on the card title and make up the bulk of the card's content.
-                                    </Card.Text>
-                                    <a href="/#" className="card-link">Card link</a>
-                                </Card.Body>
-                            </Card>
-                        </Tab>
-                    </Tabs>
-                </Col>
+        loadBlockchainData()
+    }, [dispatch])
 
-                <Col lg={3}>
+    return (
+        <div>
+            {(tokenLoaded && exchangeLoaded) ? (
+                <Row>
+                    <Col>
 
-                    {/* USER BALANCE */}
-                    <Card>
-                        <Card.Header>
-                            Balance
-                        </Card.Header>
-                        <Card.Body>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of the card's content.
-                            </Card.Text>
-                            <a href="/#" className="card-link">Card link</a>
-                        </Card.Body>
-                    </Card>
+                        {/* PRICE CHART */}
+                        <Card className='my-3'>
+                            <Card.Header>
+                                Price Chart
+                            </Card.Header>
+                            <Card.Body>
+                                <Card.Text>
+                                    Some quick example text to build on the card title and make up the bulk of the card's content.
+                                </Card.Text>
+                                <a href="/#" className="card-link">Card link</a>
+                            </Card.Body>
+                        </Card>
 
-                    {/* CREATE ORDERS */}
-                    <Card>
-                        <Card.Header>
-                            New Order
-                        </Card.Header>
-                        <Card.Body>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of the card's content.
-                            </Card.Text>
-                            <a href="/#" className="card-link">Card link</a>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        )
-    }
+                        {/* USER TRANSACTION HISTORY */}
+                        <Card className='my-3'>
+                            <Card.Header>
+                                My Transactions
+                            </Card.Header>
+                            <Card.Body>
+                                <Card.Text>
+                                    Some quick example text to build on the card title and make up the bulk of the card's content.
+                                </Card.Text>
+                                <a href="/#" className="card-link">Card link</a>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                    {/* ORDER BOOK AND EXCHANGE TRADE HISTORY */}
+                    <Col lg={3}>
+                        <Tabs defaultActiveKey="order-book" id="uncontrolled-tab-example">
+                            <Tab eventKey="order-book" title="Order Book">
+                                <Card>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            Some quick example text to build on the card title and make up the bulk of the card's content.
+                                        </Card.Text>
+                                        <a href="/#" className="card-link">Card link</a>
+                                    </Card.Body>
+                                </Card>
+                            </Tab>
+                            <Tab eventKey="trades" title="Trades">
+                                <Card>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            Some quick example text to build on the card title and make up the bulk of the card's content.
+                                        </Card.Text>
+                                        <a href="/#" className="card-link">Card link</a>
+                                    </Card.Body>
+                                </Card>
+                            </Tab>
+                        </Tabs>
+                    </Col>
+
+                    <Col lg={3}>
+
+                        {/* USER BALANCE */}
+                        <Card>
+                            <Card.Header>
+                                Balance
+                            </Card.Header>
+                            <Card.Body>
+                                <Card.Text>
+                                    Some quick example text to build on the card title and make up the bulk of the card's content.
+                                </Card.Text>
+                                <a href="/#" className="card-link">Card link</a>
+                            </Card.Body>
+                        </Card>
+
+                        {/* CREATE ORDERS */}
+                        <Card>
+                            <Card.Header>
+                                New Order
+                            </Card.Header>
+                            <Card.Body>
+                                <Card.Text>
+                                    Some quick example text to build on the card title and make up the bulk of the card's content.
+                                </Card.Text>
+                                <a href="/#" className="card-link">Card link</a>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            ) : (
+                <Alert>Loading...</Alert>
+            )}
+        </div>
+    )
 }
 
-function mapStateToProps(state) {
-    return {
-
-    }
-}
-
-export default connect(mapStateToProps)(ExchangeScreen)
-
-//export default ExchangeScreen;
+export default ExchangeScreen

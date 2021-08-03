@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&family=Raleway:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@300&family=Raleway:wght@100;300;400;500;700;900&display=swap');
 
 :root {
     --clr-black: #000000;
@@ -72,6 +72,10 @@ a {
     color: var(--clr-white);
 
     border-bottom: 1px solid var(--clr-white) !important;
+}
+
+.nav-link:hover {
+    text-decoration: underline !important;
 }
 
 .nav-link[role='tab'] {

@@ -5,7 +5,7 @@ import {
     WEB3_ACCOUNT_LOADED
 } from '../constants/web3Constants';
 
-export const loadWeb3 = (dispatch) => {
+export const loadWeb3 = () => (dispatch) => {
     const connection = new Web3(Web3.givenProvider || 'http://localhost:7545')
 
     dispatch({ type: WEB3_LOADED, connection })
@@ -13,7 +13,7 @@ export const loadWeb3 = (dispatch) => {
     return connection
 }
 
-export const loadAccount = async (web3, dispatch) => {
+export const loadAccount = (web3) => async (dispatch) => {
     const accounts = await web3.eth.getAccounts()
     const account = accounts[0]
 
