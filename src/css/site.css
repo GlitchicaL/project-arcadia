@@ -3,10 +3,13 @@
 :root {
     --clr-black: #000000;
     --clr-white: #E5F0FF;
+    
     --clr-torea-bay: #113380;
     --clr-blue-charcoal: #01050F;
     --clr-tarawera: #073546;
+
     --clr-green: #00B38B;
+    --clr-red: #B01010;
 }
 
 * {
