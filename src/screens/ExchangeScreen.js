@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // Import Components
 import Trades from '../components/Trades';
+import OrderBook from '../components/OrderBook';
 
 // Import Actions
 import { loadAllOrders } from '../redux/actions/exchangeActions';
@@ -53,14 +54,7 @@ const ExchangeScreen = () => {
             <Col lg={3}>
                 <Tabs defaultActiveKey="order-book" id="uncontrolled-tab-example">
                     <Tab eventKey="order-book" title="Order Book">
-                        <Card>
-                            <Card.Body>
-                                <Card.Text>
-                                    Some quick example text to build on the card title and make up the bulk of the card's content.
-                                </Card.Text>
-                                <a href="/#" className="card-link">Card link</a>
-                            </Card.Body>
-                        </Card>
+                        <OrderBook />
                     </Tab>
                     <Tab eventKey="trades" title="Trades">
                         <Trades />

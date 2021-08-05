@@ -1,54 +1,22 @@
-import { get } from 'lodash';
+// This script is responsible for
+
+import { create, get, groupBy, reject } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
 
 import { ETHER_ADDRESS, tokens, ether, GREEN, RED } from '../helpers';
 
-export const decorateOrder = (order) => {
-    let etherAmount
-    let tokenAmount
+export const selectOpenOrders = (allOrders, filledOrders, cancelledOrders) => {
 
-    // If tokenGive is an Ether address
-    if (order.tokenGive === ETHER_ADDRESS) {
-        etherAmount = order.amountGive
-        tokenAmount = order.amountGet
-    } else {
-        etherAmount = order.amountGet
-        tokenAmount = order.amountGive
-    }
-
-    // Calculate token price to 5 decimal places
-    const precision = 100000
-    let tokenPrice = (etherAmount / tokenAmount)
-    tokenPrice = Math.round(tokenPrice * precision) / precision
-
-    return ({
-        ...order,
-        etherAmount: ether(etherAmount),
-        tokenAmount: tokens(tokenAmount),
-        tokenPrice,
-        formattedTimestamp: moment.unix(order.timestamp).format('h:mm:ss a M/D')
+    const openOrders = reject(allOrders, (order) => {
+        const orderFilled = filledOrders.some((o) => o.id === order.id)
+        const orderCancelled = cancelledOrders.some((o) => o.id === order.id)
+        return (orderFilled || orderCancelled)
     })
+
+    return openOrders
 }
 
-export const decorateFilledOrder = (order, previousOrder) => {
-    let color
-
-    // Show green price if order price is higher than previous order
-    // Show red price is order price is lower than previous order
-    if (previousOrder.id === order.id) {
-        color = GREEN
-    } else if (previousOrder.tokenPrice <= order.tokenPrice) {
-        color = GREEN
-    } else {
-        color = RED
-    }
-
-    return ({
-        ...order,
-        tokenPriceClass: color
-    })
-}
 
 // NOTE: The code below is only for reference alongside the blockchain developer bootcamp and will be removed in a future commit
 
@@ -66,6 +34,15 @@ export const decorateFilledOrder = (order, previousOrder) => {
 //     exchangeLoaded,
 //     (tl, el) => (tl && el)
 // )
+
+// const allOrdersLoaded = state => get(state, 'exchange.allOrders.loaded', false)
+// const allOrders = state => get(state, 'exchange.allOrders.data', [])
+
+// const cancelledOrdersLoaded = state => get(state, 'exchange.cancelledOrders.loaded', false)
+// export const cancelledOrdersLoadedSelector = createSelector(cancelledOrdersLoaded, loaded => loaded)
+
+// const cancelledOrders = state => get(state, 'exchange.cancelledOrders.data', [])
+// export const cancelledOrdersSelector = createSelector(cancelledOrders, o => o)
 
 // const filledOrdersLoaded = state => get(state, 'exchange.filledOrders.loaded', false)
 // export const filledOrdersLoadedSelector = createSelector(filledOrdersLoaded, loaded => loaded)
@@ -93,4 +70,69 @@ export const decorateFilledOrder = (order, previousOrder) => {
 //             return order
 //         })
 //     )
+// }
+
+// const openOrders = state => {
+//     const all = allOrders(state)
+//     const cancelled = cancelledOrders(state)
+//     const filled = filledOrders(state)
+
+//     const openOrders = reject(all, (order) => {
+//         const orderFilled = filled.some((o) => o.id === order.id)
+//         const orderCancelled = cancelled.some((o) => o.id === order.id)
+//         return (orderFilled || orderCancelled)
+//     })
+
+//     return openOrders
+// }
+
+// const orderBookLoaded = state => cancelledOrdersLoaded(state) && filledOrdersLoaded(state) && allOrdersLoaded(state)
+// export const orderBookSelector = createSelector(
+//     openOrders,
+//     (orders) => {
+//         orders = decorateOrderBookOrders(orders)
+
+//         // Group orders by 'orderType'
+//         orders = groupBy(orders, 'orderType')
+
+//         // Fetch buy orders
+//         const buyOrders = get(orders, 'buy', [])
+
+//         // Sort buy orders by token price
+//         orders = {
+//             ...orders,
+//             buyOrders: buyOrders.sort((a, b) => b.tokenPrice - a.tokenPrice)
+//         }
+
+//         // Fetch sell orders
+//         const sellOrders = get(orders, 'sell', [])
+
+//         // Sort sell orders by token price
+//         orders = {
+//             ...orders,
+//             sellOrders: sellOrders.sort((a, b) => b.tokenPrice - a.tokenPrice)
+//         }
+//         return orders
+//     }
+// )
+
+// const decorateOrderBookOrders = (orders) => {
+//     return (
+//         orders.map((order) => {
+//             order = decorateOrder(order)
+//             order = decorateOrderBookOrder(order)
+//             return order
+//         })
+//     )
+// }
+
+// const decorateOrderBookOrder = (order) => {
+//     const orderType = order.tokenGive === ETHER_ADDRESS ? 'buy' : 'sell'
+
+//     return ({
+//         ...order,
+//         orderType,
+//         orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+//         orderFillClass: (orderType === 'buy' ? 'sell' : 'buy')
+//     })
 // }
