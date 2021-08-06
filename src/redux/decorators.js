@@ -90,6 +90,35 @@ const _decorateOrderBookOrder = (order) => {
     })
 }
 
+const _decorateMyFilledOrder = (order, account) => {
+    const myOrder = order.user === account
+
+    let orderType
+
+    if (myOrder) {
+        orderType = order.tokenGive === ETHER_ADDRESS ? 'buy' : 'sell'
+    } else {
+        orderType = order.tokenGive === ETHER_ADDRESS ? 'sell' : 'buy'
+    }
+
+    return ({
+        ...order,
+        orderType,
+        orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+        orderSign: (orderType === 'buy' ? '+' : '-')
+    })
+}
+
+const _decorateMyOpenOrder = (order, account) => {
+    let orderType = order.tokenGive === ETHER_ADDRESS ? 'buy' : 'sell'
+
+    return ({
+        ...order,
+        orderType,
+        orderTypeClass: (orderType === 'buy' ? GREEN : RED)
+    })
+}
+
 // EXTERNAL FUNCTIONS
 
 export const decorateFilledOrders = (orders) => {
@@ -127,5 +156,32 @@ export const decorateOrderBookOrders = (orders) => {
     _orders = _decorateOpenOrders(_orders)
 
     return _orders
+}
+
+export const decorateMyFilledOrders = (orders, account) => {
+
+    // Sort by date ascending
+    orders.sort((a, b) => a.timestamp - b.timestamp)
+
+    let _orders = orders.map((order) => {
+        order = _decorateOrder(order)
+        order = _decorateMyFilledOrder(order, account)
+        return order
+    })
+
+    return _orders
+
+}
+
+export const decorateMyOpenOrders = (orders, account) => {
+
+    let _orders = orders.map((order) => {
+        order = _decorateOrder(order)
+        order = _decorateMyOpenOrder(order, account)
+        return order
+    })
+
+    return _orders
+
 }
 

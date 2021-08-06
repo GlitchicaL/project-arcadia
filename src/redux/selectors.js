@@ -17,8 +17,23 @@ export const selectOpenOrders = (allOrders, filledOrders, cancelledOrders) => {
     return openOrders
 }
 
+export const selectAccountFilledOrders = (filledOrders, account) => {
+    // Find user orders
+    let orders = filledOrders.filter((o) => o.user === account || o.userFill === account)
+    return orders
+}
+
+export const selectAccountOpenOrders = (openOrders, account) => {
+    // Filter orders created by current account
+    openOrders = openOrders.filter((o) => o.user === account)
+    return openOrders
+}
+
 
 // NOTE: The code below is only for reference alongside the blockchain developer bootcamp and will be removed in a future commit
+
+// const decorateOrder = () => { return }
+// const decorateFilledOrder = () => { return }
 
 // const account = state => get(state, 'web3.account')
 // export const accountSelector = createSelector(account, a => a)
@@ -134,5 +149,91 @@ export const selectOpenOrders = (allOrders, filledOrders, cancelledOrders) => {
 //         orderType,
 //         orderTypeClass: (orderType === 'buy' ? GREEN : RED),
 //         orderFillClass: (orderType === 'buy' ? 'sell' : 'buy')
+//     })
+// }
+
+// const myFilledOrdersLoadedSelector = createSelector(filledOrdersLoaded, loaded => loaded)
+
+// const myFilledOrdersSelector = createSelector(
+//     account,
+//     filledOrders,
+//     (account, orders => {
+//         // Find user orders
+//         orders = orders.filter((o) => o.user === account || o.userFill === account)
+
+//         // Sort by date ascending
+//         orders = orders.sort((a, b) => a.timestamp - b.timestamp)
+
+//         orders = decorateMyFilledOrders(orders, account)
+
+//         return orders
+//     })
+// )
+
+// const decorateMyFilledOrders = (orders, account) => {
+//     return (
+//         orders.map((order) => {
+//             order = decorateOrder(order)
+//             order = decorateMyFilledOrder(order, account)
+//             return order
+//         })
+//     )
+// }
+
+// const decorateMyFilledOrder = (order, account) => {
+//     const myOrder = order.user === account
+
+//     let orderType
+
+//     if (myOrder) {
+//         orderType = order.tokenGive === ETHER_ADDRESS ? 'buy' : 'sell'
+//     } else {
+//         orderType = order.tokenGive === ETHER_ADDRESS ? 'sell' : 'buy'
+//     }
+
+//     return ({
+//         ...order,
+//         orderType,
+//         orderTypeClass: (orderType === 'buy' ? GREEN : RED),
+//         orderSign: (orderType === 'buy' ? '+' : '-')
+//     })
+// }
+
+// export const myOpenOrdersLoadedSelector = createSelector(orderBookLoaded, loaded => loaded)
+
+// export const myOpenOrdersSelector = createSelector(
+//     account,
+//     openOrders,
+//     (account, orders) => {
+//         // Filter orders created by current account
+//         orders = orders.filter((o) => o.user === account)
+
+//         // Decorate orders
+//         orders = decorateMyOpenOrders(orders)
+
+//         // Sort orders by descending 
+//         orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+
+//         return orders
+//     }
+// )
+
+// const decorateMyOpenOrders = (orders, account) => {
+//     return (
+//         orders.map((order) => {
+//             order = decorateOrder(order)
+//             order = decorateMyOpenOrder(order)
+//             return order
+//         })
+//     )
+// }
+
+// const decorateMyOpenOrder = (order, account) => {
+//     let orderType = order.tokenGive === ETHER_ADDRESS ? 'buy' : 'sell'
+
+//     return ({
+//         ...order,
+//         orderType,
+//         orderTypeClass: (orderType === 'buy' ? GREEN : RED)
 //     })
 // }
