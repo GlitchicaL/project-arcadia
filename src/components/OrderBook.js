@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, Table, Spinner } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 import { decorateOrderBookOrders } from '../redux/decorators';
@@ -30,43 +30,41 @@ const OrderBook = () => {
     }, [allOrders, cancelledOrders, filledOrders])
 
     return (
-        <Card>
-            <Card.Body className='p-0'>
-                {(!orders) ? (
-                    <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
-                ) : (
-                    <Table size="sm" className='small'>
-                        <tbody>
-                            {orders.sellOrders.map((order) => {
-                                return (
-                                    <tr key={order.id}>
-                                        <td>{order.tokenAmount}</td>
-                                        <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
-                                        <td>{order.etherAmount}</td>
-                                    </tr>
-                                )
-                            })}
+        <div>
+            {(!orders) ? (
+                <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
+            ) : (
+                <Table size="sm" className='small'>
+                    <tbody>
+                        {orders.sellOrders.map((order) => {
+                            return (
+                                <tr key={order.id}>
+                                    <td>{order.tokenAmount}</td>
+                                    <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
+                                    <td>{order.etherAmount}</td>
+                                </tr>
+                            )
+                        })}
 
-                            <tr>
-                                <th>DAPP</th>
-                                <th>DAPP/ETH</th>
-                                <th>ETH</th>
-                            </tr>
+                        <tr>
+                            <th>DAPP</th>
+                            <th>DAPP/ETH</th>
+                            <th>ETH</th>
+                        </tr>
 
-                            {orders.buyOrders.map((order) => {
-                                return (
-                                    <tr key={order.id}>
-                                        <td>{order.tokenAmount}</td>
-                                        <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
-                                        <td>{order.etherAmount}</td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </Table>
-                )}
-            </Card.Body>
-        </Card>
+                        {orders.buyOrders.map((order) => {
+                            return (
+                                <tr key={order.id}>
+                                    <td>{order.tokenAmount}</td>
+                                    <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
+                                    <td>{order.etherAmount}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
+            )}
+        </div>
     );
 }
 

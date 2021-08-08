@@ -1,7 +1,7 @@
 // This script is responsible for "decorating" data stored in the Redux store with additional custom attributes.
 // Examples of some custom attributes include formatting timestamps, token & ether values into human readable data.
 
-import { get, groupBy } from 'lodash';
+import { get, groupBy, maxBy, minBy } from 'lodash';
 import moment from 'moment';
 
 import { ETHER_ADDRESS, tokens, ether, GREEN, RED } from '../helpers';
@@ -119,17 +119,43 @@ const _decorateMyOpenOrder = (order, account) => {
     })
 }
 
+const _decorateGraphData = (orders) => {
+    // Group orders by hour for the graph
+    orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
+
+    const hours = Object.keys(orders)
+
+    // Build the graph series
+    const graphData = hours.map((hour) => {
+        // Fetch all orders from the current hour
+        const group = orders[hour]
+
+        // Calculate price values for open, high, low, close
+        const open = group[0] // First order
+        const high = maxBy(group, 'tokenPrice') // Highest token order
+        const low = minBy(group, 'tokenPrice') // Lowest token price
+        const close = group[group.length - 1] // Last order
+
+
+        return ({
+            x: new Date(hour),
+            y: [open.tokenPrice, high.tokenPrice, low.tokenPrice, close.tokenPrice]
+        })
+    })
+    return graphData
+}
+
 // EXTERNAL FUNCTIONS
 
 export const decorateFilledOrders = (orders) => {
 
     // Sort Orders by date ascending for decorating price comparision
-    orders.sort((a, b) => a.timestamp - b.timestamp)
+    orders = orders.sort((a, b) => a.timestamp - b.timestamp)
 
     let previousOrder = orders[0]
 
     // Decorate orders
-    let _orders = orders.map((order) => {
+    orders = orders.map((order) => {
         order = _decorateOrder(order)
         order = _decorateFilledOrder(order, previousOrder)
         previousOrder = order
@@ -137,51 +163,70 @@ export const decorateFilledOrders = (orders) => {
     })
 
     // Sort Orders by date descending for UI display
-    _orders.sort((a, b) => b.timestamp - a.timestamp)
+    orders = orders.sort((a, b) => b.timestamp - a.timestamp)
 
-    return _orders
+    return orders
 }
 
 export const decorateOrderBookOrders = (orders) => {
-    // NOTE: Filter open orders here to?
-
     // Decorate orders
-    let _orders = orders.map((order) => {
+    orders = orders.map((order) => {
         order = _decorateOrder(order)
         order = _decorateOrderBookOrder(order)
         return order
     })
 
     // Decorate & sort buy/sell orders
-    _orders = _decorateOpenOrders(_orders)
+    orders = _decorateOpenOrders(orders)
 
-    return _orders
+    return orders
 }
 
 export const decorateMyFilledOrders = (orders, account) => {
 
     // Sort by date ascending
-    orders.sort((a, b) => a.timestamp - b.timestamp)
+    orders = orders.sort((a, b) => a.timestamp - b.timestamp)
 
-    let _orders = orders.map((order) => {
+    orders = orders.map((order) => {
         order = _decorateOrder(order)
         order = _decorateMyFilledOrder(order, account)
         return order
     })
 
-    return _orders
+    return orders
 
 }
 
 export const decorateMyOpenOrders = (orders, account) => {
 
-    let _orders = orders.map((order) => {
+    orders = orders.map((order) => {
         order = _decorateOrder(order)
         order = _decorateMyOpenOrder(order, account)
         return order
     })
 
-    return _orders
+    return orders
 
+}
+
+export const decoratePriceChartOrders = (orders) => {
+    orders = orders.sort((a, b) => a.timestamp - b.timestamp)
+
+    orders = orders.map((order) => _decorateOrder(order))
+
+    // Get last 2 orders for final price and price change
+    let secondLastOrder, lastOrder
+    [secondLastOrder, lastOrder] = orders.slice(orders.length - 2, orders.length)
+
+    const lastPrice = get(lastOrder, 'tokenPrice', 0)
+    const secondLastPrice = get(secondLastOrder, 'tokenPrice', 0)
+
+    return ({
+        lastPrice,
+        lastPriceChange: (lastPrice >= secondLastPrice ? '+' : '-'),
+        series: [{
+            data: _decorateGraphData(orders)
+        }]
+    })
 }
 

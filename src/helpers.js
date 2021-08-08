@@ -10,5 +10,6 @@ export const ether = (wei) => {
 // Tokens and ether have same decimal resolution
 export const tokens = ether
 
+export const WHITE = '#E5F0FF'
 export const GREEN = '#00B38B'
 export const RED = '#B01010'

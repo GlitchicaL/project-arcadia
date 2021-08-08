@@ -1,6 +1,7 @@
-// This script is responsible for
+// This script is responsible for "selecting" specific data stored in the Redux store
+// An example includes filtering through open orders owned by an account
 
-import { create, get, groupBy, reject } from 'lodash';
+import { create, get, groupBy, maxBy, minBy, reject } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
 
@@ -236,4 +237,56 @@ export const selectAccountOpenOrders = (openOrders, account) => {
 //         orderType,
 //         orderTypeClass: (orderType === 'buy' ? GREEN : RED)
 //     })
+// }
+
+// export const priceChartLoadedSelector = createSelector(filledOrdersLoaded, loaded => loaded)
+
+// export const priceChartSelector = createSelector(
+//     filledOrders,
+//     (orders) => {
+//         orders = orders.sort((a, b) => a.timestamp - b.timestamp)
+
+//         orders = orders.map((o) => decorateOrder(o))
+
+//         // Get last 2 orders for final price and price change
+//         let secondLastOrder, lastOrder
+//         [secondLastOrder, lastOrder] = orders.slice(orders.length - 2, orders.length)
+
+//         const lastPrice = get(lastOrder, 'tokenPrice', 0)
+//         const secondLastPrice = get(secondLastOrder, 'tokenPrice', 0)
+
+//         return ({
+//             lastPrice,
+//             lastPriceChange: (lastPrice >= secondLastPrice ? '+' : '-'),
+//             series: [{
+//                 data: buildGraphData(orders)
+//             }]
+//         })
+//     }
+// )
+
+// const buildGraphData = (orders) => {
+//     // Group orders by hour for the graph
+//     orders = groupBy(orders, (o) => moment.unix(o.timestamp).startOf('hour').format())
+
+//     const hours = Object.keys(orders)
+
+//     // Build the graph series
+//     const graphData = hours.map((hour) => {
+//         // Fetch all orders from the current hour
+//         const group = orders[hour]
+
+//         // Calculate price values for open, high, low, close
+//         const open = group[0] // First order
+//         const high = maxBy(group, 'tokenPrice') // Highest token order
+//         const low = minBy(group, 'tokenPrice') // Lowest token price
+//         const close = group[group.length - 1] // Last order
+
+
+//         return ({
+//             x: new Date(hour),
+//             y: [open.tokenPrice, high.tokenPrice, low.tokenPrice, close.tokenPrice]
+//         })
+//     })
+//     return graphData
 // }
