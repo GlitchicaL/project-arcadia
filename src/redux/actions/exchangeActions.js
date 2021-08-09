@@ -32,3 +32,22 @@ export const loadAllOrders = (exchange) => async (dispatch) => {
 
     dispatch({ type: 'ALL_ORDERS_LOADED', allOrders })
 }
+
+export const subscribeToEvents = (exchange) => async (dispatch) => {
+    exchange.events.Cancel({}, (error, event) => {
+        const order = event.returnValues
+        dispatch({ type: 'ORDER_CANCELLED', order })
+    })
+}
+
+export const cancelOrder = (exchange, order, account) => async (dispatch) => {
+    exchange.methods.cancelOrder(order.id).send({ from: account })
+        .on('transactionHash', (hash) => {
+            dispatch({ type: 'ORDER_CANCELLING' })
+        })
+        .on('error', (error) => {
+            console.log(error)
+            window.alert('There was an error')
+        })
+}
+

@@ -1,4 +1,4 @@
-const exchange = (state = { loaded: false, contract: {} }, action) => {
+const exchange = (state = { loaded: false, contract: {}, orderCancelling: false }, action) => {
     switch (action.type) {
         case 'EXCHANGE_LOADED':
             return {
@@ -31,6 +31,25 @@ const exchange = (state = { loaded: false, contract: {} }, action) => {
                 allOrders: {
                     loaded: true,
                     data: action.allOrders
+                }
+            }
+
+        case 'ORDER_CANCELLING':
+            return {
+                ...state,
+                orderCancelling: true
+            }
+
+        case 'ORDER_CANCELLED':
+            return {
+                ...state,
+                orderCancelling: false,
+                cancelledOrders: {
+                    ...state.cancelledOrders,
+                    data: [
+                        ...state.cancelledOrders.data,
+                        action.order
+                    ]
                 }
             }
 

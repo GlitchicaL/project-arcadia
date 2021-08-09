@@ -38,7 +38,7 @@ const OrderBook = () => {
                     <tbody>
                         {orders.sellOrders.map((order) => {
                             return (
-                                <tr key={order.id}>
+                                <tr key={order.id} className='table-hover'>
                                     <td>{order.tokenAmount}</td>
                                     <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
                                     <td>{order.etherAmount}</td>
@@ -54,7 +54,7 @@ const OrderBook = () => {
 
                         {orders.buyOrders.map((order) => {
                             return (
-                                <tr key={order.id}>
+                                <tr key={order.id} className='table-hover'>
                                     <td>{order.tokenAmount}</td>
                                     <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
                                     <td>{order.etherAmount}</td>

@@ -9,7 +9,7 @@ import PriceChart from '../components/PriceChart';
 import Transactions from '../components/Transactions';
 
 // Import Actions
-import { loadAllOrders } from '../redux/actions/exchangeActions';
+import { loadAllOrders, subscribeToEvents } from '../redux/actions/exchangeActions';
 
 const ExchangeScreen = () => {
     const dispatch = useDispatch()
@@ -18,7 +18,14 @@ const ExchangeScreen = () => {
     const { contract } = exchange
 
     useEffect(() => {
-        dispatch(loadAllOrders(contract))
+
+        const loadExchangeData = async () => {
+            await dispatch(loadAllOrders(contract))
+            await dispatch(subscribeToEvents(contract))
+        }
+
+        loadExchangeData()
+
     }, [contract, dispatch])
 
     return (

@@ -70,6 +70,17 @@ a {
 }
 
 /*** Override Bootstrap Styles ***/
+.btn {
+    font-weight: 500 !important;
+
+    background: transparent !important;
+    border-bottom: 1px solid var(--clr-white) !important;
+}
+
+.btn-cancel:hover {
+    background: var(--clr-red) !important;
+}
+
 .card {
     background: none !important;
     color: var(--clr-white);
@@ -105,4 +116,13 @@ a {
 .dropdown-item:hover {
     background: var(--clr-white) !important;
     color: var(--clr-blue-charcoal) !important;
+}
+
+.table-hover:hover {
+    background: var(--clr-tarawera);
+    transition: 250ms ease;
+}
+
+td {
+    vertical-align: middle !important;
 }

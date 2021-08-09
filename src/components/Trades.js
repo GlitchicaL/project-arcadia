@@ -37,7 +37,7 @@ const Trades = () => {
                     <tbody>
                         {orders.map((order) => {
                             return (
-                                <tr key={order.id}>
+                                <tr key={order.id} className='table-hover'>
                                     <td>{order.formattedTimestamp}</td>
                                     <td>{order.tokenAmount}</td>
                                     <td style={{ color: `${order.tokenPriceClass}` }}>{order.tokenPrice}</td>

@@ -290,3 +290,6 @@ export const selectAccountOpenOrders = (openOrders, account) => {
 //     })
 //     return graphData
 // }
+
+// const orderCancelling = state => get(state, 'exchange.orderCancelling', false)
+// export const orderCancellingSelector = createSelector(orderCancelling, status => status)
