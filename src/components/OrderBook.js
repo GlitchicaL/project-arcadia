@@ -1,15 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Table, Spinner } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { Table, Spinner, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { decorateOrderBookOrders } from '../redux/decorators';
 import { selectOpenOrders } from '../redux/selectors';
+import { fillOrder } from '../redux/actions/exchangeActions';
 
 const OrderBook = () => {
     const [orders, setOrders] = useState(null)
+    const [orderBookLoaded, setorderBookLoaded] = useState(false)
+    const [showOrderBook, setshowOrderBook] = useState(false)
+
+    const dispatch = useDispatch()
+
+    const web3 = useSelector(state => state.web3)
+    const { account } = web3
 
     const exchange = useSelector(state => state.exchange)
-    const { allOrders, cancelledOrders, filledOrders } = exchange
+    const { contract, allOrders, filledOrders, cancelledOrders, orderFilling } = exchange
 
     useEffect(() => {
 
@@ -24,25 +32,46 @@ const OrderBook = () => {
 
             // Set orders
             setOrders(_orders)
+            setorderBookLoaded(true)
 
         }
 
-    }, [allOrders, cancelledOrders, filledOrders])
+        if (orderBookLoaded && !orderFilling) {
+            setshowOrderBook(true)
+        } else {
+            setshowOrderBook(false)
+        }
+
+    }, [allOrders, filledOrders, cancelledOrders, account, orderBookLoaded, orderFilling])
+
+    const fillOrderHandler = (order) => {
+        dispatch(fillOrder(contract, order, account))
+    }
 
     return (
         <div>
-            {(!orders) ? (
+            {(!showOrderBook) ? (
                 <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
             ) : (
                 <Table size="sm" className='small'>
                     <tbody>
                         {orders.sellOrders.map((order) => {
                             return (
-                                <tr key={order.id} className='table-hover'>
-                                    <td>{order.tokenAmount}</td>
-                                    <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
-                                    <td>{order.etherAmount}</td>
-                                </tr>
+                                <OverlayTrigger
+                                    key={order.id}
+                                    placement='left'
+                                    overlay={
+                                        <Tooltip id={order.id}>
+                                            {`Click here to ${order.orderFillClass}`}
+                                        </Tooltip>
+                                    }
+                                >
+                                    <tr className='table-hover pointer' onClick={() => fillOrderHandler(order)}>
+                                        <td>{order.tokenAmount}</td>
+                                        <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
+                                        <td>{order.etherAmount}</td>
+                                    </tr>
+                                </OverlayTrigger>
                             )
                         })}
 
@@ -54,11 +83,21 @@ const OrderBook = () => {
 
                         {orders.buyOrders.map((order) => {
                             return (
-                                <tr key={order.id} className='table-hover'>
-                                    <td>{order.tokenAmount}</td>
-                                    <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
-                                    <td>{order.etherAmount}</td>
-                                </tr>
+                                <OverlayTrigger
+                                    key={order.id}
+                                    placement='left'
+                                    overlay={
+                                        <Tooltip id={order.id}>
+                                            {`Click here to ${order.orderFillClass}`}
+                                        </Tooltip>
+                                    }
+                                >
+                                    <tr className='table-hover pointer' onClick={() => fillOrderHandler(order)}>
+                                        <td>{order.tokenAmount}</td>
+                                        <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
+                                        <td>{order.etherAmount}</td>
+                                    </tr>
+                                </OverlayTrigger>
                             )
                         })}
                     </tbody>

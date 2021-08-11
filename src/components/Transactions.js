@@ -39,7 +39,6 @@ const Transactions = () => {
         }
 
         if (myOpenOrdersLoaded && !orderCancelling) {
-            console.log(myOpenOrdersLoaded && !orderCancelling)
             setShowMyOpenOrders(true)
         } else {
             setShowMyOpenOrders(false)

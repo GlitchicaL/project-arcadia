@@ -38,12 +38,28 @@ export const subscribeToEvents = (exchange) => async (dispatch) => {
         const order = event.returnValues
         dispatch({ type: 'ORDER_CANCELLED', order })
     })
+
+    exchange.events.Trade({}, (error, event) => {
+        const order = event.returnValues
+        dispatch({ type: 'ORDER_FILLED', order })
+    })
 }
 
 export const cancelOrder = (exchange, order, account) => async (dispatch) => {
     exchange.methods.cancelOrder(order.id).send({ from: account })
         .on('transactionHash', (hash) => {
             dispatch({ type: 'ORDER_CANCELLING' })
+        })
+        .on('error', (error) => {
+            console.log(error)
+            window.alert('There was an error')
+        })
+}
+
+export const fillOrder = (exchange, order, account) => async (dispatch) => {
+    exchange.methods.fillOrder(order.id).send({ from: account })
+        .on('transactionHash', (hash) => {
+            dispatch({ type: 'ORDER_FILLING' })
         })
         .on('error', (error) => {
             console.log(error)

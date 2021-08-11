@@ -69,6 +69,10 @@ a {
     flex-direction: column;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 /*** Override Bootstrap Styles ***/
 .btn {
     font-weight: 500 !important;
