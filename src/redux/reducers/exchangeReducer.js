@@ -1,15 +1,41 @@
+import {
+    EXCHANGE_LOADED,
+
+    CANCELLED_ORDERS_LOADED,
+    FILLED_ORDERS_LOADED,
+    ALL_ORDERS_LOADED,
+
+    ORDER_CANCELLING,
+    ORDER_CANCELLED,
+    ORDER_FILLING,
+    ORDER_FILLED,
+
+    EXCHANGE_ETHER_BALANCE_LOADED,
+    EXCHANGE_TOKEN_BALANCE_LOADED,
+    BALANCES_LOADING,
+    BALANCES_LOADED,
+
+    TRANSFER_REQUEST,
+    TRANSFER_SUCCESS,
+    TRANSFER_FAIL,
+    TRANSFER_RESET
+} from '../constants/exchangeConstants';
+
 const exchange = (state = { loaded: false, contract: {}, orderCancelling: false }, action) => {
     let index, data
 
     switch (action.type) {
-        case 'EXCHANGE_LOADED':
+        case EXCHANGE_LOADED:
             return {
                 ...state,
                 loaded: true,
                 contract: action.exchange
             }
 
-        case 'CANCELLED_ORDERS_LOADED':
+        // ------------------------------------------------------------------------------
+        // ORDER CASES (DEPOSIT & WITHDRAWS)
+
+        case CANCELLED_ORDERS_LOADED:
             return {
                 ...state,
                 cancelledOrders: {
@@ -18,7 +44,7 @@ const exchange = (state = { loaded: false, contract: {}, orderCancelling: false 
                 }
             }
 
-        case 'FILLED_ORDERS_LOADED':
+        case FILLED_ORDERS_LOADED:
             return {
                 ...state,
                 filledOrders: {
@@ -27,7 +53,7 @@ const exchange = (state = { loaded: false, contract: {}, orderCancelling: false 
                 }
             }
 
-        case 'ALL_ORDERS_LOADED':
+        case ALL_ORDERS_LOADED:
             return {
                 ...state,
                 allOrders: {
@@ -36,13 +62,13 @@ const exchange = (state = { loaded: false, contract: {}, orderCancelling: false 
                 }
             }
 
-        case 'ORDER_CANCELLING':
+        case ORDER_CANCELLING:
             return {
                 ...state,
                 orderCancelling: true
             }
 
-        case 'ORDER_CANCELLED':
+        case ORDER_CANCELLED:
             return {
                 ...state,
                 orderCancelling: false,
@@ -55,13 +81,13 @@ const exchange = (state = { loaded: false, contract: {}, orderCancelling: false 
                 }
             }
 
-        case 'ORDER_FILLING':
+        case ORDER_FILLING:
             return {
                 ...state,
                 orderFilling: true
             }
 
-        case 'ORDER_FILLED':
+        case ORDER_FILLED:
             // Prevent duplicate orders
             index = state.filledOrders.data.findIndex(order => order.id === action.order.id)
 
@@ -78,6 +104,68 @@ const exchange = (state = { loaded: false, contract: {}, orderCancelling: false 
                     ...state.filledOrders,
                     data
                 }
+            }
+
+        // ------------------------------------------------------------------------------
+        // BALANCE CASES (DEPOSIT & WITHDRAWS)
+
+        case EXCHANGE_ETHER_BALANCE_LOADED:
+            return {
+                ...state,
+                etherBalance: action.balance
+            }
+
+        case EXCHANGE_TOKEN_BALANCE_LOADED:
+            return {
+                ...state,
+                tokenBalance: action.balance
+            }
+
+        case BALANCES_LOADING:
+            return {
+                ...state,
+                balancesLoading: true
+            }
+
+        case BALANCES_LOADED:
+            return {
+                ...state,
+                balancesLoading: false
+            }
+
+        // ------------------------------------------------------------------------------
+        // TRANSFER CASES (DEPOSIT & WITHDRAWS)
+
+        case TRANSFER_REQUEST:
+            return {
+                ...state,
+                transferInProgress: true,
+                transferType: action.transferType,
+                transferToken: action.transferToken
+            }
+
+        case TRANSFER_SUCCESS:
+            return {
+                ...state,
+                transferInProgress: false,
+                transferType: action.transferType,
+                transferToken: action.transferToken
+            }
+
+        case TRANSFER_FAIL:
+            return {
+                ...state,
+                transferInProgress: false,
+                transferType: action.transferType,
+                transferToken: action.transferToken
+            }
+
+        case TRANSFER_RESET:
+            return {
+                ...state,
+                transferInProgress: false,
+                transferType: '',
+                transferToken: ''
             }
 
         default:

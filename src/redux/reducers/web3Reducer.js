@@ -1,6 +1,8 @@
 import {
     WEB3_LOADED,
-    WEB3_ACCOUNT_LOADED
+    WEB3_ACCOUNT_LOADED,
+
+    ETHER_BALANCE_LOADED
 } from '../constants/web3Constants';
 
 const web3 = (state = {}, action) => {
@@ -15,6 +17,12 @@ const web3 = (state = {}, action) => {
             return {
                 ...state,
                 account: action.account
+            }
+
+        case ETHER_BALANCE_LOADED:
+            return {
+                ...state,
+                balance: action.balance
             }
 
         default:

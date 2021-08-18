@@ -3,6 +3,7 @@ import { Tabs, Tab, Row, Col, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Import Components
+import Balance from '../components/Balance';
 import Trades from '../components/Trades';
 import OrderBook from '../components/OrderBook';
 import PriceChart from '../components/PriceChart';
@@ -30,7 +31,7 @@ const ExchangeScreen = () => {
 
     return (
         <Row>
-            <Col lg={5} xl={6}>
+            <Col lg={4} xl={6}>
 
                 {/* PRICE CHART */}
                 <PriceChart />
@@ -55,20 +56,10 @@ const ExchangeScreen = () => {
                 </Card>
             </Col>
 
-            <Col lg={3}>
+            <Col lg={4} xl={3}>
 
                 {/* USER BALANCE */}
-                <Card>
-                    <Card.Header>
-                        Balance
-                    </Card.Header>
-                    <Card.Body>
-                        <Card.Text>
-                            Some quick example text to build on the card title and make up the bulk of the card's content.
-                        </Card.Text>
-                        <a href="/#" className="card-link">Card link</a>
-                    </Card.Body>
-                </Card>
+                <Balance />
 
                 {/* CREATE ORDERS */}
                 <Card>

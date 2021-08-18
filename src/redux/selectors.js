@@ -5,7 +5,7 @@ import { create, get, groupBy, maxBy, minBy, reject } from 'lodash';
 import { createSelector } from 'reselect';
 import moment from 'moment';
 
-import { ETHER_ADDRESS, tokens, ether, GREEN, RED } from '../helpers';
+import { ETHER_ADDRESS, tokens, ether, GREEN, RED, formatBalance } from '../helpers';
 
 export const selectOpenOrders = (allOrders, filledOrders, cancelledOrders) => {
 
@@ -293,3 +293,38 @@ export const selectAccountOpenOrders = (openOrders, account) => {
 
 // const orderCancelling = state => get(state, 'exchange.orderCancelling', false)
 // export const orderCancellingSelector = createSelector(orderCancelling, status => status)
+
+// const balancesLoading = state => get(state, 'exchange.balancesLoading', true)
+// export const balancesLoadingSelector = createSelector(balancesLoading, status => status)
+
+// const etherBalance = state => get(state, 'web3.balance', 0)
+// export const etherBalanceSelector = createSelector(
+//     etherBalance,
+//     (balance) => {
+//         return formatBalance(balance)
+//     }
+// )
+
+// const tokenBalance = state => get(state, 'token.balance', 0)
+// export const tokenBalanceSelector = createSelector(
+//     tokenBalance,
+//     (balance) => {
+//         return formatBalance(balance)
+//     }
+// )
+
+// const exchangeEtherBalance = state => get(state, 'exchange.etherBalance', 0)
+// export const exchangeEtherBalanceSelector = createSelector(
+//     exchangeEtherBalance,
+//     (balance) => {
+//         return formatBalance(balance)
+//     }
+// )
+
+// const exchangeTokenBalance = state => get(state, 'exchange.tokenBalance', 0)
+// export const exchangeTokenBalanceSelector = createSelector(
+//     exchangeTokenBalance,
+//     (balance) => {
+//         return formatBalance(balance)
+//     }
+// )
