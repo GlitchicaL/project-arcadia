@@ -103,7 +103,7 @@ const Transactions = () => {
                                                 <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenAmount}</td>
                                                 <td style={{ color: `${order.orderTypeClass}` }}>{order.tokenPrice}</td>
                                                 <td>
-                                                    <Button size="sm" className='btn-cancel' onClick={() => cancelOrderHandler(order)}>Cancel</Button>
+                                                    <Button size="sm" className='btn-sm' onClick={() => cancelOrderHandler(order)}><span>Cancel</span></Button>
                                                 </td>
                                             </tr>
                                         )

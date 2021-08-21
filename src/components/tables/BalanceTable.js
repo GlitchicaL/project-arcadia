@@ -1,6 +1,17 @@
 import { Table } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 
-const BalanceTable = ({ etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance }) => {
+const BalanceTable = () => {
+
+    const web3 = useSelector(state => state.web3)
+    const { balance: etherBalance } = web3
+
+    const exchange = useSelector(state => state.exchange)
+    const { etherBalance: exchangeEtherBalance, tokenBalance: exchangeTokenBalance } = exchange
+
+    const token = useSelector(state => state.token)
+    const { balance: tokenBalance } = token
+
     return (
         <Table size="sm" className='small'>
             <thead>

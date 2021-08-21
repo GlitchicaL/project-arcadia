@@ -20,6 +20,8 @@ const ExchangeScreen = () => {
 
     useEffect(() => {
 
+        document.title = 'Exchange | Project Arcadia'
+
         const loadExchangeData = async () => {
             await dispatch(loadAllOrders(contract))
             await dispatch(subscribeToEvents(contract))
@@ -30,51 +32,59 @@ const ExchangeScreen = () => {
     }, [contract, dispatch])
 
     return (
-        <Row>
-            <Col lg={4} xl={6}>
+        <div>
+            <Row>
+                <Col md={6} lg={7} xl={7} xxl={8}>
 
-                {/* PRICE CHART */}
-                <PriceChart />
+                    {/* PRICE CHART */}
+                    <PriceChart />
 
-                {/* USER TRANSACTION HISTORY */}
-                <Transactions />
-            </Col>
+                </Col>
 
-            {/* ORDER BOOK AND EXCHANGE TRADE HISTORY */}
-            <Col lg={4} xl={3}>
-                <Card>
-                    <Card.Body>
-                        <Tabs defaultActiveKey="order-book" id="uncontrolled-tab-example" className='my-2'>
-                            <Tab eventKey="order-book" title="Order Book">
-                                <OrderBook />
-                            </Tab>
-                            <Tab eventKey="trades" title="Trades">
-                                <Trades />
-                            </Tab>
-                        </Tabs>
-                    </Card.Body>
-                </Card>
-            </Col>
+                {/* ORDER BOOK AND EXCHANGE TRADE HISTORY */}
+                <Col md={6} lg={5} xl={5} xxl={4}>
+                    <Card className='my-3'>
+                        <Card.Body>
+                            <Tabs defaultActiveKey="order-book" id="uncontrolled-tab-example" className='my-2'>
+                                <Tab eventKey="order-book" title="Order Book">
+                                    <OrderBook />
+                                </Tab>
+                                <Tab eventKey="trades" title="Trades">
+                                    <Trades />
+                                </Tab>
+                            </Tabs>
+                        </Card.Body>
+                    </Card>
+                </Col>
 
-            <Col lg={4} xl={3}>
+                <Col md={6} lg={6} xl={4}>
 
-                {/* USER BALANCE */}
-                <Balance />
+                    {/* CREATE ORDERS */}
+                    <Card className='my-3'>
+                        <Card.Header>
+                            New Order
+                        </Card.Header>
+                        <Card.Body>
+                            <Card.Text>
+                                Some quick example text to build on the card title and make up the bulk of the card's content.
+                            </Card.Text>
+                            <a href="/#" className="card-link">Card link</a>
+                        </Card.Body>
+                    </Card>
 
-                {/* CREATE ORDERS */}
-                <Card>
-                    <Card.Header>
-                        New Order
-                    </Card.Header>
-                    <Card.Body>
-                        <Card.Text>
-                            Some quick example text to build on the card title and make up the bulk of the card's content.
-                        </Card.Text>
-                        <a href="/#" className="card-link">Card link</a>
-                    </Card.Body>
-                </Card>
-            </Col>
-        </Row>
+                </Col>
+
+                <Col md={6} lg={6} xl={4}>
+                    {/* USER BALANCE */}
+                    <Balance />
+                </Col>
+
+                <Col lg={12} xl={4}>
+                    {/* USER TRANSACTION HISTORY */}
+                    <Transactions />
+                </Col>
+            </Row>
+        </div>
     )
 }
 

@@ -67,7 +67,7 @@ const Balance = () => {
     }
 
     return (
-        <Card>
+        <Card className='my-3'>
             <Card.Header>
                 Balance
             </Card.Header>
@@ -79,12 +79,7 @@ const Balance = () => {
 
                         <Tab eventKey='deposit' title='Deposit'>
 
-                            <BalanceTable
-                                etherBalance={etherBalance}
-                                exchangeEtherBalance={exchangeEtherBalance}
-                                tokenBalance={tokenBalance}
-                                exchangeTokenBalance={exchangeTokenBalance}
-                            />
+                            <BalanceTable />
 
                             {/* DEPOSIT ETHER FORM */}
                             <TransferForm submitHandler={depositEtherHandler} valueHandler={setEthDepositAmount} tokenType='ETH' transferType='Deposit' />
@@ -96,12 +91,7 @@ const Balance = () => {
 
                         <Tab eventKey='withdraw' title='Withdraw'>
 
-                            <BalanceTable
-                                etherBalance={etherBalance}
-                                exchangeEtherBalance={exchangeEtherBalance}
-                                tokenBalance={tokenBalance}
-                                exchangeTokenBalance={exchangeTokenBalance}
-                            />
+                            <BalanceTable />
 
                             {/* WITHDRAW ETHER FORM */}
                             <TransferForm submitHandler={withdrawEtherHandler} valueHandler={setEthWithdrawAmount} tokenType='ETH' transferType='Withdraw' />
