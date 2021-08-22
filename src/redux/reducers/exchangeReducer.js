@@ -18,10 +18,13 @@ import {
     TRANSFER_REQUEST,
     TRANSFER_SUCCESS,
     TRANSFER_FAIL,
-    TRANSFER_RESET
+    TRANSFER_RESET,
+
+    ORDER_MAKING,
+    ORDER_MADE
 } from '../constants/exchangeConstants';
 
-const exchange = (state = { loaded: false, contract: {}, orderCancelling: false }, action) => {
+const exchange = (state = { loaded: false, contract: {}, orderCancelling: false, buyOrder: { making: false }, sellOrder: { making: false } }, action) => {
     let index, data
 
     switch (action.type) {
@@ -166,6 +169,37 @@ const exchange = (state = { loaded: false, contract: {}, orderCancelling: false 
                 transferInProgress: false,
                 transferType: '',
                 transferToken: ''
+            }
+
+        // ------------------------------------------------------------------------------
+        // MAKING ORDERS CASES
+
+        case ORDER_MAKING:
+            return {
+                ...state,
+                newOrder: { ...state.newOrder, amount: null, price: null, making: true }
+            }
+
+        case ORDER_MADE:
+            // Prevent duplicate orders
+            index = state.allOrders.data.findIndex(order => order.id === action.order.id)
+
+            if (index === -1) {
+                data = [...state.allOrders.data, action.order]
+            } else {
+                data = state.allOrders.data
+            }
+
+            return {
+                ...state,
+                allOrders: {
+                    ...state.allOrders,
+                    data
+                },
+                newOrder: {
+                    ...state.newOrder,
+                    making: false
+                }
             }
 
         default:

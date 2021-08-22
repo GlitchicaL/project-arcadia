@@ -33,6 +33,10 @@ body {
 
 /*** Text Styles (h1, h2, p, etc). ***/
 
+h1, h2, h3, h4, h5, h6 {
+    color: var(--clr-white) !important;
+}
+
 h1 {
     font-weight: 700;
     font-size: clamp(1.75rem, 5vw, 3rem);

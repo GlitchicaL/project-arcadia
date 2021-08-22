@@ -8,6 +8,7 @@ import Trades from '../components/Trades';
 import OrderBook from '../components/OrderBook';
 import PriceChart from '../components/PriceChart';
 import Transactions from '../components/Transactions';
+import NewOrder from '../components/NewOrder';
 
 // Import Actions
 import { loadAllOrders, subscribeToEvents } from '../redux/actions/exchangeActions';
@@ -60,28 +61,22 @@ const ExchangeScreen = () => {
                 <Col md={6} lg={6} xl={4}>
 
                     {/* CREATE ORDERS */}
-                    <Card className='my-3'>
-                        <Card.Header>
-                            New Order
-                        </Card.Header>
-                        <Card.Body>
-                            <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of the card's content.
-                            </Card.Text>
-                            <a href="/#" className="card-link">Card link</a>
-                        </Card.Body>
-                    </Card>
+                    <NewOrder />
 
                 </Col>
 
                 <Col md={6} lg={6} xl={4}>
+
                     {/* USER BALANCE */}
                     <Balance />
+
                 </Col>
 
                 <Col lg={12} xl={4}>
+
                     {/* USER TRANSACTION HISTORY */}
                     <Transactions />
+
                 </Col>
             </Row>
         </div>

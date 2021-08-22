@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Spinner, Tabs, Tab, Table, Form, Button } from 'react-bootstrap';
+import { Card, Spinner, Tabs, Tab } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
 import TransferForm from './forms/TransferForm';
@@ -17,13 +17,13 @@ const Balance = () => {
     const dispatch = useDispatch()
 
     const web3 = useSelector(state => state.web3)
-    const { connection, account, balance: etherBalance } = web3
+    const { connection, account } = web3
 
     const exchange = useSelector(state => state.exchange)
-    const { contract: exchangeContract, balancesLoading, etherBalance: exchangeEtherBalance, tokenBalance: exchangeTokenBalance, transferInProgress } = exchange
+    const { contract: exchangeContract, balancesLoading, transferInProgress } = exchange
 
     const token = useSelector(state => state.token)
-    const { contract: tokenContract, balance: tokenBalance } = token
+    const { contract: tokenContract } = token
 
     useEffect(() => {
 

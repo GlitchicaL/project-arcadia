@@ -18,7 +18,10 @@ import {
     TRANSFER_REQUEST,
     TRANSFER_SUCCESS,
     TRANSFER_FAIL,
-    TRANSFER_RESET
+    TRANSFER_RESET,
+
+    ORDER_MAKING,
+    ORDER_MADE
 } from '../constants/exchangeConstants';
 import { ETHER_BALANCE_LOADED } from '../constants/web3Constants';
 import { TOKEN_BALANCE_LOADED } from '../constants/tokenConstants';
@@ -82,6 +85,11 @@ export const subscribeToEvents = (exchange) => async (dispatch) => {
 
     exchange.events.Withdraw({}, (error, event) => {
         dispatch({ type: TRANSFER_RESET })
+    })
+
+    exchange.events.Order({}, (error, event) => {
+        const order = event.returnValues
+        dispatch({ type: ORDER_MADE, order })
     })
 
 }
@@ -241,5 +249,37 @@ export const withdrawToken = (web3, exchange, token, amount, account) => async (
 
         })
 
+}
+
+export const makeBuyOrder = (web3, exchange, token, order, account) => async (dispatch) => {
+    const tokenGet = token.options.address
+    const amountGet = web3.utils.toWei(order.amount, 'ether')
+    const tokenGive = ETHER_ADDRESS
+    const amountGive = web3.utils.toWei((order.amount * order.price).toString(), 'ether')
+
+    exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+        .on('transactionHash', (hash) => {
+            dispatch({ type: ORDER_MAKING })
+        })
+        .on('error', (error) => {
+            console.log(error)
+            window.alert(error)
+        })
+}
+
+export const makeSellOrder = (web3, exchange, token, order, account) => async (dispatch) => {
+    const tokenGet = ETHER_ADDRESS
+    const amountGet = web3.utils.toWei((order.amount * order.price).toString(), 'ether')
+    const tokenGive = token.options.address
+    const amountGive = web3.utils.toWei(order.amount, 'ether')
+
+    exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+        .on('transactionHash', (hash) => {
+            dispatch({ type: ORDER_MAKING })
+        })
+        .on('error', (error) => {
+            console.log(error)
+            window.alert(error)
+        })
 }
 
