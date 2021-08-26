@@ -40,7 +40,7 @@ const PriceChart = () => {
             </Card.Header>
             <Card.Body className='p-1'>
                 {priceChartData ? (
-                    <Chart options={chartOptions} series={dummyData} type='candlestick' width='100%' height='100%' />
+                    <Chart options={chartOptions} series={priceChartData.series} type='candlestick' width='100%' height='100%' />
                 ) : (
                     <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
                 )}
