@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,6 +15,8 @@ import { loadToken } from './redux/actions/tokenActions';
 import { loadExchange } from './redux/actions/exchangeActions';
 
 function App() {
+	const [message, setMessage] = useState(null)
+
 	const dispatch = useDispatch()
 
 	const token = useSelector(state => state.token)
@@ -25,25 +27,33 @@ function App() {
 
 	useEffect(() => {
 		const loadBlockchainData = async () => {
+
+			try {
+
+				setMessage('Awaiting MetaMask Login...')
+				await window.ethereum.enable();
+
+			}
+			catch (error) {
+				setMessage('MetaMask not detected')
+			}
+
 			const web3 = dispatch(loadWeb3())
-
-			await window.ethereum.enable();
-
 			dispatch(loadAccount(web3))
 
 			const networkId = await web3.eth.net.getId()
 
-			const token = dispatch(loadToken(web3, networkId))
+			const token = await dispatch(loadToken(web3, networkId))
 
 			if (!token) {
-				window.alert('Token not deployed to the current network. Please select another network with Metamask')
+				setMessage('Token not deployed to the current network. Please select another network with Metamask.')
 				return
 			}
 
-			const exchange = dispatch(loadExchange(web3, networkId))
+			const exchange = await dispatch(loadExchange(web3, networkId))
 
 			if (!exchange) {
-				window.alert('Exchange not deployed to the current network. Please select another network with Metamask')
+				setMessage('Exchange not deployed to the current network. Please select another network with Metamask')
 				return
 			}
 		}
@@ -60,6 +70,7 @@ function App() {
 			) : (
 				<Container>
 					<Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
+					{message && <p className='mx-auto text-center my-3'>{message}</p>}
 				</Container>
 			)}
 
