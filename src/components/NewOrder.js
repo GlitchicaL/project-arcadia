@@ -19,16 +19,27 @@ const NewOrder = () => {
     const { connection, account } = web3
 
     const exchange = useSelector(state => state.exchange)
-    const { contract: exchangeContract, buyOrder, sellOrder } = exchange
+    const { contract: exchangeContract, newOrder } = exchange
 
     const token = useSelector(state => state.token)
     const { contract: tokenContract } = token
 
     useEffect(() => {
 
-        setShowForm(!buyOrder.making && !sellOrder.making)
+        setShowForm(!newOrder.making)
 
-    }, [buyOrder, sellOrder])
+        // Reset values after a new order is made
+        if (newOrder.making) {
+
+            setBuyAmount(0)
+            setBuyPrice(0)
+
+            setSellAmount(0)
+            setsellPrice(0)
+
+        }
+
+    }, [newOrder])
 
     const makeBuyOrderHandler = (e) => {
         e.preventDefault()
@@ -63,7 +74,10 @@ const NewOrder = () => {
                     <Tab eventKey='buy' title='Buy'>
 
                         {!showForm ? (
-                            <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
+                            <div className='my-5'>
+                                <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
+                                <p className='my-3 mx-auto text-center'>Creating Buy Order</p>
+                            </div>
                         ) : (
                             <OrderForm submitHandler={makeBuyOrderHandler} setAmount={setBuyAmount} setPrice={setBuyPrice} orderType={'Buy'} />
                         )}
@@ -75,7 +89,10 @@ const NewOrder = () => {
                     <Tab eventKey='sell' title='Sell'>
 
                         {!showForm ? (
-                            <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
+                            <div className='my-5'>
+                                <Spinner animation="border" className='mx-auto' style={{ display: 'flex' }} />
+                                <p className='my-3 mx-auto text-center'>Creating Sell Order</p>
+                            </div>
                         ) : (
                             <OrderForm submitHandler={makeSellOrderHandler} setAmount={setSellAmount} setPrice={setsellPrice} orderType={'Sell'} />
                         )}

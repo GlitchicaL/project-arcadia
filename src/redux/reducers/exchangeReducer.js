@@ -24,7 +24,7 @@ import {
     ORDER_MADE
 } from '../constants/exchangeConstants';
 
-const exchange = (state = { loaded: false, contract: {}, orderCancelling: false, buyOrder: { making: false }, sellOrder: { making: false } }, action) => {
+const exchange = (state = { loaded: false, contract: {}, orderCancelling: false, newOrder: { making: false } }, action) => {
     let index, data
 
     switch (action.type) {
@@ -177,7 +177,7 @@ const exchange = (state = { loaded: false, contract: {}, orderCancelling: false,
         case ORDER_MAKING:
             return {
                 ...state,
-                newOrder: { ...state.newOrder, amount: null, price: null, making: true }
+                newOrder: { ...state.newOrder, amount: action.order.amount, price: action.order.price, making: true }
             }
 
         case ORDER_MADE:

@@ -259,11 +259,11 @@ export const makeBuyOrder = (web3, exchange, token, order, account) => async (di
 
     exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
         .on('transactionHash', (hash) => {
-            dispatch({ type: ORDER_MAKING })
+            dispatch({ type: ORDER_MAKING, order })
         })
         .on('error', (error) => {
             console.log(error)
-            window.alert(error)
+            window.alert(`Error: ${error.code} \n ${error.message}`)
         })
 }
 
@@ -275,11 +275,11 @@ export const makeSellOrder = (web3, exchange, token, order, account) => async (d
 
     exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
         .on('transactionHash', (hash) => {
-            dispatch({ type: ORDER_MAKING })
+            dispatch({ type: ORDER_MAKING, order })
         })
         .on('error', (error) => {
             console.log(error)
-            window.alert(error)
+            window.alert(`Error: ${error.code} \n ${error.message}`)
         })
 }
 
